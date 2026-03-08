@@ -1,0 +1,37 @@
+cat > .gitignore << 'EOF'
+# ROS Build Artifacts
+build/
+devel/
+install/
+log/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large data files (bag files, models)
+*.bag
+*.db
+*.pcd
+EOF
