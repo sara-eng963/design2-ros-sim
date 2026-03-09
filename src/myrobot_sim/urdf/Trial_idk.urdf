@@ -95,7 +95,7 @@
     <child
       link="FR_Wheel" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
   </joint>
   <link
     name="RR_Wheel">
@@ -148,7 +148,7 @@
     <child
       link="RR_Wheel" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
   </joint>
   <link
     name="RL_Wheel">
@@ -307,7 +307,7 @@
     <child
       link="Pinion" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
     <limit
       lower="0"
       upper="3.14"
