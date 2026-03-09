@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="Trial_idk">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.0481414138273208 -0.00398854433261392 -0.0280199985734328"
+        rpy="0 0 0" />
+      <mass
+        value="2.94917563924566" />
+      <inertia
+        ixx="0.0128398820596771"
+        ixy="-9.9773361084281E-05"
+        ixz="-0.000218468845396348"
+        iyy="0.0149312823932681"
+        iyz="-0.000654799122087799"
+        izz="0.0228588893971449" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.745098039215686 0.737254901960784 0.729411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="FR_Wheel">
+    <inertial>
+      <origin
+        xyz="2.77555756156289E-17 4.16333634234434E-17 0.0217868189669027"
+        rpy="0 0 0" />
+      <mass
+        value="0.257449308227528" />
+      <inertia
+        ixx="0.000171102338872607"
+        ixy="2.54109884176063E-21"
+        ixz="1.26041515730682E-19"
+        iyy="0.000171102338872607"
+        iyz="-1.17216867513079E-19"
+        izz="0.000258572345817047" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FR_Wheel_Joint"
+    type="continuous">
+    <origin
+      xyz="0.055378 -0.17702 -0.081659"
+      rpy="1.5708 1.5334 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="FR_Wheel" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="RR_Wheel">
+    <inertial>
+      <origin
+        xyz="-2.77555756156289E-17 1.38777878078145E-17 0.0217868189668995"
+        rpy="0 0 0" />
+      <mass
+        value="0.257449308227528" />
+      <inertia
+        ixx="0.000171102338872607"
+        ixy="-9.11175611688506E-36"
+        ixz="-1.67551630418403E-19"
+        iyy="0.000171102338872607"
+        iyz="3.24723508539993E-21"
+        izz="0.000258572345817047" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RR_Wheel_Joint"
+    type="continuous">
+    <origin
+      xyz="-0.18962 -0.17702 -0.081659"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="RR_Wheel" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="RL_Wheel">
+    <inertial>
+      <origin
+        xyz="8.32667268468867E-17 2.77555756156289E-17 0.0217868189668999"
+        rpy="0 0 0" />
+      <mass
+        value="0.257449308227528" />
+      <inertia
+        ixx="0.000171102338872607"
+        ixy="-1.05879118406788E-22"
+        ixz="-9.3369127610073E-21"
+        iyy="0.000171102338872607"
+        iyz="-3.86439265136411E-19"
+        izz="0.000258572345817047" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RL_Wheel_Joint"
+    type="continuous">
+    <origin
+      xyz="-0.18962 0.17598 -0.081659"
+      rpy="1.5708 -1.567 -3.1416" />
+    <parent
+      link="base_link" />
+    <child
+      link="RL_Wheel" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="FL_Wheel">
+    <inertial>
+      <origin
+        xyz="-9.71445146547012E-17 6.93889390390723E-18 0.0217868189668995"
+        rpy="0 0 0" />
+      <mass
+        value="0.257449308227528" />
+      <inertia
+        ixx="0.000171102338872607"
+        ixy="-1.27054942088145E-21"
+        ixz="-2.82189112687604E-19"
+        iyy="0.000171102338872607"
+        iyz="1.20399045316315E-19"
+        izz="0.000258572345817047" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FL_Wheel_Joint"
+    type="continuous">
+    <origin
+      xyz="0.055378 0.17598 -0.081659"
+      rpy="1.5708 -1.5694 -3.1416" />
+    <parent
+      link="base_link" />
+    <child
+      link="FL_Wheel" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Pinion">
+    <inertial>
+      <origin
+        xyz="-1.11632385481342E-07 -4.90056753232881E-08 0.0217623360867328"
+        rpy="0 0 0" />
+      <mass
+        value="0.01971261332238" />
+      <inertia
+        ixx="2.49308494258273E-06"
+        ixy="2.72344718652473E-10"
+        ixz="-3.61858006756224E-11"
+        iyy="2.49258756099775E-06"
+        iyz="-1.5891324049069E-11"
+        izz="3.84795949836166E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Pinion_Joint"
+    type="revolute">
+    <origin
+      xyz="0.11325 -0.069981 -0.011459"
+      rpy="3.1416 0 -1.7799" />
+    <parent
+      link="base_link" />
+    <child
+      link="Pinion" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="3.14"
+      effort="10"
+      velocity="1" />
+  </joint>
+  <link
+    name="Arm">
+    <inertial>
+      <origin
+        xyz="-0.0447636964861963 0.0437778638064752 -0.0082804221999584"
+        rpy="0 0 0" />
+      <mass
+        value="0.552851524789675" />
+      <inertia
+        ixx="0.000443857677321355"
+        ixy="-1.89526206123062E-05"
+        ixz="1.302833847817E-05"
+        iyy="0.000503143102055466"
+        iyz="5.00417084359423E-06"
+        izz="0.000494848988738842" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.301960784313725 0.305882352941176 0.290196078431373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Arm_Joint"
+    type="revolute">
+    <origin
+      xyz="0.10378 -0.0006244 0.017885"
+      rpy="1.7033 1.5708 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Arm" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="0"
+      upper="3.14"
+      effort="10"
+      velocity="1" />
+    <mimic
+      joint="Pinion_Joint"
+      multiplier="2.5"
+      offset="0" />
+  </joint>
+</robot>

@@ -15,7 +15,7 @@ def generate_launch_description():
     default_model_path = os.path.join(
         pkg_share,
         'urdf',
-        'Trial1_URDFF.urdf'
+        'Trial_idk.urdf'
     )
 
     default_rviz_config_path = os.path.join(

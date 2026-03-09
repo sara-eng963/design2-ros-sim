@@ -44,12 +44,7 @@ Visualization Manager:
       Enabled: true
       Links:
         All Links Enabled: true
-        Body:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Bottom_Rack:
+        Arm:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -67,18 +62,8 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        Gear_Rotation:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Hand_Pinion:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         Link Tree Style: Links in Alphabetic Order
-        Pinion_Rotation:
+        Pinion:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -93,7 +78,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        Top_Rack:
+        base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -113,25 +98,19 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        Body:
-          Value: true
-        Bottom_Rack:
+        Arm:
           Value: true
         FL_Wheel:
           Value: true
         FR_Wheel:
           Value: true
-        Gear_Rotation:
-          Value: true
-        Hand_Pinion:
-          Value: true
-        Pinion_Rotation:
+        Pinion:
           Value: true
         RL_Wheel:
           Value: true
         RR_Wheel:
           Value: true
-        Top_Rack:
+        base_link:
           Value: true
       Marker Scale: 0.30000001192092896
       Name: TF
@@ -139,19 +118,15 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        Body:
+        base_link:
+          Arm:
+            {}
           FL_Wheel:
             {}
           FR_Wheel:
             {}
-          Hand_Pinion:
-            Bottom_Rack:
-              {}
-            Top_Rack:
-              {}
-          Pinion_Rotation:
-            Gear_Rotation:
-              {}
+          Pinion:
+            {}
           RL_Wheel:
             {}
           RR_Wheel:
@@ -161,7 +136,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: Body
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -179,7 +154,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.812175989151001
+      Distance: 1.055680274963379
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -194,10 +169,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.2447965145111084
+      Pitch: 0.25979653000831604
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.6703906655311584
+      Yaw: 0.8953906297683716
     Saved: ~
 Window Geometry:
   Displays:
@@ -207,5 +182,5 @@ Window Geometry:
   Hide Right Dock: false
   QMainWindow State: 000000ff00000000fd000000010000000000000156000002c3fc0200000001fb000000100044006900730070006c006100790073010000003b000002c3000000c700ffffff000004a4000002c300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Width: 1536
-  X: 0
-  Y: 23
+  X: 8
+  Y: 31
