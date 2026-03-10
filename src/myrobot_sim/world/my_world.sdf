@@ -79,7 +79,7 @@
           <max_contacts>10</max_contacts>
         </collision>
 
-        <visual name='visual'>
+        <visual name='visual_1'>
           <cast_shadows>0</cast_shadows>
 
           <geometry>
@@ -118,7 +118,7 @@
           </material>
         </visual>
 
-        <visual name='visual'>
+        <visual name='visual_2'>
           <cast_shadows>0</cast_shadows>
 
           <geometry>
@@ -236,7 +236,7 @@
 
               </collision>
 
-              <visual name='visual'>
+              <visual name='visual_3'>
 
                 <geometry>
                   <box>
@@ -317,7 +317,7 @@
 
         </collision>
 
-        <visual name='visual'>
+        <visual name='visual_4'>
 
           <geometry>
             <sphere>
@@ -334,7 +334,7 @@
 
         </visual>
 
-        <visual name='visual'>
+        <visual name='visual_5'>
 
           <geometry>
             <sphere>

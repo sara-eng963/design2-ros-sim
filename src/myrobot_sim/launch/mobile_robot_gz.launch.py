@@ -114,28 +114,11 @@ def generate_launch_description():
         arguments=["diff_drive_controller"],
     )
 
-    control_node = Node(
-        package='controller_manager',
-        executable='ros2_control_node',
-        parameters=[
-            {
-    'robot_description': ParameterValue(
-        Command(['xacro ', default_model_path]),
-        value_type=str
-    )
-},
-            robot_controllers,
-            {"use_sim_time": True}
-        ],
-        output='screen',
-    )
-
     return LaunchDescription([
         gazebo,
         bridge_gz,
         node_gz_spawn_entity,
         robot_state_publisher_node,
-        control_node,
         joint_state_broadcaster_spawner,
         diff_drive_controller_spawner,
     ])
