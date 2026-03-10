@@ -6,6 +6,15 @@ controller_manager:
       type: joint_state_broadcaster/JointStateBroadcaster
     diff_drive_controller:
       type: diff_drive_controller/DiffDriveController
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+      joints:
+        - Pinion_Joint
+      gains:
+        Pinion_Joint: {p: 10.0, d: 0.1, i: 0.0}
+      state_publish_rate: 50
+      stop_trajectory_duration: 0.5
+
 
 diff_drive_controller:
   ros__parameters:

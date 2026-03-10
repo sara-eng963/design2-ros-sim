@@ -61,7 +61,7 @@ def generate_launch_description():
                 'gz_sim.launch.py'
             )
         ]),
-        launch_arguments={'gz_args': f'-r -v 4 {world_file_path}'}.items()
+        launch_arguments={'gz_args': f'-r -v 4 {world_file_path} --physics-engine gz-physics-bullet-featherstone-plugin'}.items()
     )
 
     # Bridge Node
