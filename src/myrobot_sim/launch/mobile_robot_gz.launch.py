@@ -51,6 +51,7 @@ def generate_launch_description():
     }]
     )
 
+    world_file_path = os.path.join(pkg_share, 'world', 'my_world.sdf') 
     # gz launch
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
@@ -60,7 +61,7 @@ def generate_launch_description():
                 'gz_sim.launch.py'
             )
         ]),
-        launch_arguments={'gz_args': '-r empty.sdf'}.items()
+        launch_arguments={'gz_args': f'-r -v 4 {world_file_path}'}.items()
     )
 
     # Bridge Node
@@ -92,7 +93,7 @@ def generate_launch_description():
             '-name', 'Robot_Body_URDF',
             '-x', '0.0',
             '-y', '0.0',
-            '-z', '0.03',
+            '-z', '0.12566',
             '-R', '0.0',  # rotate around X (roll)
             '-P', '0.0',
             '-Y', '0.0'

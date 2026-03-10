@@ -9,8 +9,8 @@ controller_manager:
 
 diff_drive_controller:
   ros__parameters:
-    left_wheel_names: ['FL_Joint', 'RL_Joint']
-    right_wheel_names: ['FR_Joint', 'RR_Joint']
+    left_wheel_names: ['FL_Wheel_Joint', 'RL_Wheel_Joint']
+    right_wheel_names: ['FR_Wheel_Joint', 'RR_Wheel_Joint']
     wheel_separation: 0.22
     wheel_radius: 0.06
     wheel_separation_multiplier: 1.0
@@ -18,7 +18,7 @@ diff_drive_controller:
     right_wheel_radius_multiplier: 1.0
     publish_rate: 50.0
     odom_frame_id: odom
-    base_frame_id: RobotBody
+    base_frame_id: Trial_idk
     pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     open_loop: true
