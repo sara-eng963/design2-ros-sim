@@ -1,33 +1,54 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, GroupAction, RegisterEventHandler, DeclareLaunchArgument
+from launch.actions import (
+    IncludeLaunchDescription,
+    GroupAction,
+    RegisterEventHandler,
+    DeclareLaunchArgument
+)
 from launch.conditions import IfCondition, UnlessCondition
 from launch.event_handlers import OnProcessStart
-from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import (
+    Command,
+    LaunchConfiguration,
+    PathJoinSubstitution
+)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+
 import os
 from ament_index_python.packages import get_package_share_directory
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
 
     pkg_share = FindPackageShare(package='myrobot_sim').find('myrobot_sim')
-    default_model_path = os.path.join(pkg_share, 'urdf', 'Trial_idk.urdf')
+
+    default_model_path = os.path.join(
+        pkg_share,
+        'urdf',
+        'Trial_idk.urdf'
+    )
 
     # default_rviz_config_path = os.path.join(pkg_share, 'rviz', 'config.rviz')
 
-    robot_controllers = PathJoinSubstitution(
-        [pkg_share, 'config', 'controllers.yaml']
-    )
+    robot_controllers = PathJoinSubstitution([
+        pkg_share,
+        'config',
+        'controllers.yaml'
+    ])
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         parameters=[{
-            'robot_description': Command(['xacro','/home/roaa/My_Workspace/src/design2-ros-sim/src/myrobot_sim/urdf/Trial_idk.urdf']),
-            'use_sim_time': True
-        }]
+            'robot_description': ParameterValue(
+                Command(['xacro ', default_model_path]),
+                value_type=str
+        ),
+        'use_sim_time': True
+    }]
     )
 
     # gz launch
@@ -56,7 +77,7 @@ def generate_launch_description():
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
         ],
         remappings=[
-            ('/world/empty/model/Trial_idk/joint_state', 'joint_states'),
+            ('/world/empty/model/Robot_Body_URDF/joint_state', 'joint_states'),
         ],
         output='screen'
     )
@@ -68,7 +89,7 @@ def generate_launch_description():
         output='screen',
         arguments=[
             '-topic', 'robot_description',
-            '-name', 'Trial_idk',
+            '-name', 'Robot_Body_URDF',
             '-x', '0.0',
             '-y', '0.0',
             '-z', '0.03',
@@ -96,7 +117,12 @@ def generate_launch_description():
         package='controller_manager',
         executable='ros2_control_node',
         parameters=[
-            {'robot_description': Command(['xacro','/home/roaa/My_Workspace/src/design2-ros-sim/src/yrobot_sim/urdf/Trial_idk.urdf'])},
+            {
+    'robot_description': ParameterValue(
+        Command(['xacro ', default_model_path]),
+        value_type=str
+    )
+},
             robot_controllers,
             {"use_sim_time": True}
         ],
