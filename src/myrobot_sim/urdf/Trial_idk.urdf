@@ -26,7 +26,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -40,7 +40,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -66,7 +66,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
       </geometry>
       <material
         name="">
@@ -80,7 +80,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
       </geometry>
     </collision>
   </link>
@@ -119,7 +119,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
       </geometry>
       <material
         name="">
@@ -133,7 +133,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
       </geometry>
     </collision>
   </link>
@@ -172,7 +172,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
       </geometry>
       <material
         name="">
@@ -186,7 +186,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
       </geometry>
     </collision>
   </link>
@@ -225,7 +225,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
       </geometry>
       <material
         name="">
@@ -239,7 +239,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
       </geometry>
     </collision>
   </link>
@@ -278,7 +278,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
       </geometry>
       <material
         name="">
@@ -292,7 +292,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
       </geometry>
     </collision>
   </link>
@@ -336,7 +336,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
       </geometry>
       <material
         name="">
@@ -350,7 +350,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
       </geometry>
     </collision>
   </link>
@@ -376,4 +376,49 @@
       multiplier="2.5"
       offset="0" />
   </joint>
+  <ros2_control name="RobotSystem" type="system">
+<hardware>
+<plugin>gz_ros2_control/GazeboSimSystem</plugin>
+</hardware>
+<joint name="FR_Joint">
+<command_interface name="velocity">
+<param name="min">-10</param>
+<param name="max">10</param>
+</command_interface>
+<state_interface name="velocity"/>
+<state_interface name="position"/>
+</joint>
+<joint name="FL_Joint">
+<command_interface name="velocity">
+<param name="min">-10</param>
+<param name="max">10</param>
+</command_interface>
+<state_interface name="velocity"/>
+<state_interface name="position"/>
+</joint>
+<joint name="RL_Joint">
+<command_interface name="velocity">
+<param name="min">-10</param>
+<param name="max">10</param>
+</command_interface>
+<state_interface name="velocity"/>
+<state_interface name="position"/>
+</joint>
+<joint name="RR_Joint">
+<command_interface name="velocity">
+<param name="min">-10</param>
+<param name="max">10</param>
+</command_interface>
+<state_interface name="velocity"/>
+<state_interface name="position"/>
+</joint>
+</ros2_control>
+<gazebo>
+<plugin filename="gz_ros2_control-system"
+name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+<parameters>
+home\roaa\My_Workspace\install\myrobot_sim\share\myrobot_sim\configcontrollers.yaml
+</parameters>
+</plugin>
+</gazebo>
 </robot>
