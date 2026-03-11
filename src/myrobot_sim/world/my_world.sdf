@@ -171,99 +171,49 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
 
-    <model name='unit_box'>
+    <model name="unit_box">
+  <pose>1.51271 -0.181418 0.5 0 0 0</pose>
 
-      <pose>1.51271 -0.181418 0.5 0 -0 0</pose>
+  <link name="link">
+    <inertial>
+      <mass>1</mass>
+      <inertia>
+        <ixx>0.166667</ixx>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyy>0.166667</iyy>
+        <iyz>0</iyz>
+        <izz>0.166667</izz>
+      </inertia>
+    </inertial>
 
-      <link name='link'>
+    <collision name="collision">
+      <geometry>
+        <box>
+          <size>1 1 1</size>
+        </box>
+      </geometry>
+    </collision>
 
-        <inertial>
-          <mass>1</mass>
+    <visual name="visual">
+      <geometry>
+        <box>
+          <size>1 1 1</size>
+        </box>
+      </geometry>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/Grey</name>
+        </script>
+      </material>
+    </visual>
 
-          <inertia>
-            <ixx>0.166667</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>0.166667</iyy>
-            <iyz>0</iyz>
-            <izz>0.166667</izz>
-          </inertia>
-
-          <pose>0 0 0 0 -0 0</pose>
-        </inertial>
-
-        <collision name='collision'>
-
-          <geometry>
-            <box>
-              <size>1 1 1</size>
-            </box>
-          </geometry>
-
-          <max_contacts>10</max_contacts>
-
-          <surface>
-            <contact>
-              <ode/>
-
-              <collision name='collision'>
-
-                <geometry>
-                  <box>
-                    <size>1 1 1</size>
-                  </box>
-                </geometry>
-
-                <max_contacts>10</max_contacts>
-
-                <surface>
-
-                  <contact>
-                    <ode/>
-                  </contact>
-
-                  <bounce/>
-
-                  <friction>
-                    <torsional>
-                      <ode/>
-                    </torsional>
-
-                    <ode/>
-                  </friction>
-
-                </surface>
-
-              </collision>
-
-              <visual name='visual_3'>
-
-                <geometry>
-                  <box>
-                    <size>1 1 1</size>
-                  </box>
-                </geometry>
-
-                <material>
-                  <script>
-                    <name>Gazebo/Grey</name>
-                    <uri>file://media/materials/scripts/gazebo.material</uri>
-                  </script>
-                </material>
-
-              </visual>
-
-              <self_collide>0</self_collide>
-              <enable_wind>0</enable_wind>
-              <kinematic>0</kinematic>
-
-            </contact>
-          </surface>
-        </collision>
-
-      </link>
-
-    </model>
+    <self_collide>0</self_collide>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+  </link>
+</model>
 
     <model name='unit_sphere'>
 
@@ -358,6 +308,19 @@
       </link>
 
     </model>
+    <include>
+  <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/orange</uri>
+  <pose>0 0 0.5 0 0 0</pose>
+  <name>orange</name>
+</include>
+
+<!--
+<include>
+  <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket</uri>
+  <pose>0 0 0 1.5708 0 0</pose> 
+  <name>supermarket</name>
+</include>
+-->
 
     <state world_name='default'>
 

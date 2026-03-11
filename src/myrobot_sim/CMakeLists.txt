@@ -6,6 +6,10 @@ install(
   DIRECTORY urdf
   DESTINATION share/${PROJECT_NAME}
 )
+install(
+  DIRECTORY models/
+  DESTINATION share/${PROJECT_NAME}/models
+)
 install( 
 DIRECTORY urdf meshes launch rviz config world 
 DESTINATION share/${PROJECT_NAME} 
