@@ -171,6 +171,7 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
 
+<!--
     <model name="unit_box">
   <pose>1.51271 -0.181418 0.5 0 0 0</pose>
 
@@ -214,6 +215,8 @@
     <kinematic>0</kinematic>
   </link>
 </model>
+-->
+<!--
 
     <model name='unit_sphere'>
 
@@ -308,6 +311,8 @@
       </link>
 
     </model>
+    -->
+
     <include>
   <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/orange</uri>
   <pose>0 0 0.5 0 0 0</pose>
@@ -321,6 +326,28 @@
   <name>supermarket</name>
 </include>
 -->
+
+<!--
+<include>
+  <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket2</uri>
+  <pose>0 0 0 1.5708 0 0</pose> 
+  <name>supermarket2</name>
+</include>
+-->
+<!--
+<include>
+  <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket4</uri>
+  <pose>0 0 0 1.5708 0 0</pose> 
+  <name>supermarket4</name>
+</include>
+-->
+
+<include>
+  <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/shelf</uri>
+   <pose>2.3790082931518555 -0.3723791241645813 -0.59369444847106934 1.5707999875854248 4.2584357009673922e-06 -1.6012900220934472</pose> 
+  <name>shelf</name>
+</include>
+
 
     <state world_name='default'>
 

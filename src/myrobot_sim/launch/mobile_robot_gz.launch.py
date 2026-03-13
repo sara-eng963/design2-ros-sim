@@ -51,7 +51,7 @@ def generate_launch_description():
     }]
     )
 
-    world_file_path = os.path.join(pkg_share, 'world', 'my_world.sdf') 
+    world_file_path = os.path.join(pkg_share, 'world', 'my_world.sdf')   
     # gz launch
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
