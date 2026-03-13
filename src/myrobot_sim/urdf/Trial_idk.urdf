@@ -26,7 +26,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -40,7 +40,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -66,7 +66,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
       </geometry>
       <material
         name="">
@@ -80,7 +80,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/FR_Wheel.STL" />
       </geometry>
     </collision>
   </link>
@@ -119,7 +119,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
       </geometry>
       <material
         name="">
@@ -133,7 +133,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/RR_Wheel.STL" />
       </geometry>
     </collision>
   </link>
@@ -172,7 +172,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
       </geometry>
       <material
         name="">
@@ -186,7 +186,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/RL_Wheel.STL" />
       </geometry>
     </collision>
   </link>
@@ -225,7 +225,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
       </geometry>
       <material
         name="">
@@ -239,7 +239,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/FL_Wheel.STL" />
       </geometry>
     </collision>
   </link>
@@ -278,7 +278,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
       </geometry>
       <material
         name="">
@@ -292,7 +292,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/Pinion.STL" />
       </geometry>
     </collision>
   </link>
@@ -336,7 +336,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
       </geometry>
       <material
         name="">
@@ -350,7 +350,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
+          filename="file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/meshes/Arm.STL" />
       </geometry>
     </collision>
   </link>
@@ -418,12 +418,102 @@
   <state_interface name="position"/>
 </joint>
 </ros2_control>
+<!--Adding the sensor IMU-->
+<link name="imu_link">
+<inertial>
+   <mass value="0.05"/>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <inertia ixx="1e-5" ixy="0" ixz="0"
+            iyy="1e-5" iyz="0"
+            izz="1e-5"/>
+</inertial>
+<visual>
+<geometry>
+<box size="0.02 0.02 0.01"/>
+</geometry>
+</visual>
+<collision>
+<geometry>
+<box size="0.02 0.02 0.01"/>
+</geometry>
+</collision>
+</link>
+<joint name="imu_joint" type="fixed">
+<parent link="base_link"/>
+<child link="imu_link"/>
+<origin xyz="0 0 0.05" rpy="0 0 0"/>
+</joint>
+<link name="ultrasonic_link">
+<visual>
+<geometry>
+<cylinder radius="0.03" length="0.05"/>
+</geometry>
+</visual>
+<collision>
+<geometry>
+<cylinder radius="0.03" length="0.05"/>
+</geometry>
+</collision>
+<inertial>
+<mass value="0.1"/>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<inertia ixx="1e-5" ixy="0" ixz="0"
+iyy="1e-5" iyz="0"
+izz="1e-5"/>
+</inertial>
+</link>
+<joint name="ultrasonic_joint" type="fixed">
+<parent link="base_link"/>
+<child link="ultrasonic_link"/>
+<origin xyz="0.15 0 0.07" rpy="0 0 0"/>
+</joint>
 <gazebo>
 <plugin filename="gz_ros2_control-system"
 name="gz_ros2_control::GazeboSimROS2ControlPlugin">
 <parameters>
-/home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/config/controllers.yaml
+/home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/config/controllers.yaml
 </parameters>
 </plugin>
+</gazebo>
+<!--Adding IMU Sensor Plugin-->
+<gazebo reference="imu_link">
+<sensor name="imu_sensor" type="imu">
+<always_on>true</always_on>
+<update_rate>50</update_rate>
+<topic>imu</topic>
+<gz_frame_id>imu_link</gz_frame_id>
+<plugin
+filename="gz-sim-imu-system"
+name="gz::sim::systems::Imu"/>
+</sensor>
+</gazebo>
+<gazebo reference="ultrasonic_link">
+<sensor name="lidar_sensor" type="gpu_lidar">
+<update_rate>50</update_rate>
+<topic>scan</topic>
+<ray>
+  <scan>
+    <horizontal>
+      <samples>640</samples>
+      <resolution>1</resolution>
+      <min_angle>-0.2618</min_angle>
+      <max_angle>0.2618</max_angle>
+    </horizontal>
+  <vertical>
+  <samples>1</samples>
+  <resolution>0.01</resolution>
+  <min_angle>0</min_angle>
+  <max_angle>0</max_angle>
+  </vertical>
+  </scan>
+  <range>
+  <min>0.08</min>
+  <max>10.0</max>
+  <resolution>0.01</resolution>
+  </range>
+</ray>
+<always_on>1</always_on>
+<visualize>true</visualize>
+</sensor>
 </gazebo>
 </robot>

@@ -6,14 +6,14 @@
       <visual name="visual">
         <geometry>
           <mesh>
-            <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket3/supermarket3.glb</uri>
+            <uri>file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/models/supermarket3/supermarket3.glb</uri>
           </mesh>
         </geometry>
       </visual>
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket3/supermarket3.glb</uri>
+            <uri>file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/models/supermarket3/supermarket3.glb</uri>
           </mesh>
         </geometry>
       </collision>
