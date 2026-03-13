@@ -11,7 +11,17 @@ install(
   DESTINATION share/${PROJECT_NAME}/models
 )
 install( 
-DIRECTORY urdf meshes launch rviz config world 
+PROGRAMS 
+scripts/obstacle_avoidance.py 
+DESTINATION lib/${PROJECT_NAME} 
+) 
+install( 
+PROGRAMS 
+scripts/obstacle_avoidance.py 
+DESTINATION lib/${PROJECT_NAME} 
+)
+install( 
+DIRECTORY urdf meshes launch rviz config world scripts
 DESTINATION share/${PROJECT_NAME} 
 ) 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")

@@ -8,7 +8,7 @@
       <visual name="visual">
         <geometry>
           <mesh>
-            <uri>file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/models/shelf/Shelf.glb</uri>
+            <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/shelf/Shelf.glb</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -17,7 +17,7 @@
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/models/shelf/Shelf.glb</uri>
+            <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/shelf/Shelf.glb</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>

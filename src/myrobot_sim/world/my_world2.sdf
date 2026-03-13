@@ -217,18 +217,18 @@
       <self_collide>false</self_collide>
     </model>
     <include>
-      <uri>file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/models/orange</uri>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/orange</uri>
       <name>orange</name>
       <pose>0.57761478424072266 -0.024280814453959465 0.20684914290904999 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/models/shelf</uri>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/shelf</uri>
       <name>shelf</name>
       <pose>2.3790082931518555 -0.3723791241645813 -0.59369444847106934 1.5707999875854248 4.2584357009673922e-06 -1.6012900220934472</pose>
     </include>
     
 <include>
-  <uri>file:///home/roaa/My_Workspace/install/myrobot_sim/share/myrobot_sim/models/supermarket</uri>
+  <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket</uri>
   <pose>0 0 0 1.5708 0 0</pose> 
   <name>supermarket</name>
 </include>
