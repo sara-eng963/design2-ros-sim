@@ -10,11 +10,11 @@
     <gravity>0 0 -9.8000000000000007</gravity>
     <magnetic_field>6.0000000000000002e-06 2.3e-05 -4.1999999999999998e-05</magnetic_field>
     <atmosphere type='adiabatic'/>
-    <physics type='bullet'>
-      <max_step_size>0.001</max_step_size>
-      <real_time_factor>1</real_time_factor>
-      <real_time_update_rate>1000</real_time_update_rate>
-    </physics>
+    <physics name="default_physics" type="ode" default="true">
+  <max_step_size>0.001</max_step_size>
+  <real_time_factor>1.0</real_time_factor>
+  <real_time_update_rate>1000</real_time_update_rate>
+</physics>
     <scene>
       <ambient>0.400000006 0.400000006 0.400000006 1</ambient>
       <background>0.699999988 0.699999988 0.699999988 1</background>
@@ -157,6 +157,13 @@
       <name>shelf</name>
       <pose>2.3790082931518555 -0.3723791241645813 -0.59369444847106934 1.5707999619299005 4.2247672654275534e-06 -1.6012899170941965</pose>
     </include>
+
+    <include>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/coffee-shop</uri>
+      <name>coffee-shop</name>
+      <pose>-3.34 0 0 1.55 0 0</pose>
+    </include>
+
     <light name='sun' type='directional'>
       <pose>0 0 10 0 0 0</pose>
       <cast_shadows>true</cast_shadows>

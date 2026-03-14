@@ -40,7 +40,7 @@ def main():
     global cmd_pub, node #to use it in other functions
     rclpy.init()
     node = Node("Obstacle_Avoidance_Node")
-    cmd_pub = node.create_publisher(TwistStamped, '/diff_drive_controller/controllers/cmd_vel', 10)
+    cmd_pub = node.create_publisher(TwistStamped, '/diff_drive_controller/cmd_vel', 10)
     node.create_subscription(LaserScan, '/scan', scan_callback, 10)
     node.get_logger().info("Node is initialized")
     rclpy.spin(node)

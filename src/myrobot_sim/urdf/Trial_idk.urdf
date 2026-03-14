@@ -371,10 +371,6 @@
       upper="3.14"
       effort="10"
       velocity="1" />
-    <mimic
-      joint="Pinion_Joint"
-      multiplier="2.5"
-      offset="0" />
   </joint>
   <ros2_control name="RobotSystem" type="system">
 <hardware>
@@ -413,7 +409,7 @@
 <state_interface name="position"/>
 </joint>
 
-<joint name="Pinion_Joint">
+<joint name="Arm_Joint">
   <command_interface name="position"/>
   <state_interface name="position"/>
 </joint>

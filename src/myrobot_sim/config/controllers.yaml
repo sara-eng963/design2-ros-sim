@@ -9,9 +9,9 @@ controller_manager:
     arm_controller:
       type: joint_trajectory_controller/JointTrajectoryController
       joints:
-        - Pinion_Joint
+        - Arm_Joint
       gains:
-        Pinion_Joint: {p: 10.0, d: 0.1, i: 0.0}
+        Arm_Joint: {p: 10.0, d: 0.1, i: 0.0}
       state_publish_rate: 50
       stop_trajectory_duration: 0.5
 
@@ -20,14 +20,14 @@ diff_drive_controller:
   ros__parameters:
     left_wheel_names: ['FL_Wheel_Joint', 'RL_Wheel_Joint']
     right_wheel_names: ['FR_Wheel_Joint', 'RR_Wheel_Joint']
-    wheel_separation: 0.22
-    wheel_radius: 0.06
+    wheel_separation: 0.353
+    wheel_radius: 0.12566
     wheel_separation_multiplier: 1.0
     left_wheel_radius_multiplier: 1.0
     right_wheel_radius_multiplier: 1.0
     publish_rate: 50.0
     odom_frame_id: odom
-    base_frame_id: Trial_idk
+    base_frame_id: Trial_idk  
     pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     open_loop: true

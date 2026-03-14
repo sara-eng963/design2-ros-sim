@@ -18,6 +18,7 @@ DESTINATION lib/${PROJECT_NAME}
 install( 
 PROGRAMS 
 scripts/obstacle_avoidance.py 
+scripts/waypoints_control.py 
 DESTINATION lib/${PROJECT_NAME} 
 )
 install( 
