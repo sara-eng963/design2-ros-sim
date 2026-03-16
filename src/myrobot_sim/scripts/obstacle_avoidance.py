@@ -17,7 +17,7 @@ def scan_callback(msg):
  
     if len(ranges) == 0: 
             return 
-    front_ranges = np.concatenate((ranges[:30], ranges[-30:])) 
+    front_ranges = np.concatenate((ranges[:15], ranges[-15:])) 
  
     min_distance = np.min(front_ranges) 
  

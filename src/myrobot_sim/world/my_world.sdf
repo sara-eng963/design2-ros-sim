@@ -150,20 +150,20 @@
     <include>
       <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/orange</uri>
       <name>orange</name>
-      <pose>0.54471290111541748 0.00048599243746139109 0.18639899790287018 0 0 0</pose>
+      <pose>0.59 0.21 0.19 0 0 0</pose>
     </include>
     <include>
       <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/shelf</uri>
       <name>shelf</name>
       <pose>2.3790082931518555 -0.3723791241645813 -0.59369444847106934 1.5707999619299005 4.2247672654275534e-06 -1.6012899170941965</pose>
     </include>
-
-    <include>
-      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/coffee-shop</uri>
-      <name>coffee-shop</name>
-      <pose>-3.34 0 0 1.55 0 0</pose>
+<!--
+<include>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket4</uri>
+      <name>supermarket4</name>
+      <pose>0 0 0 0 0 0</pose>
     </include>
-
+-->
     <light name='sun' type='directional'>
       <pose>0 0 10 0 0 0</pose>
       <cast_shadows>true</cast_shadows>

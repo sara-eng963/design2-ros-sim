@@ -16,6 +16,7 @@
             <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket4/supermarket4.glb</uri>
           </mesh>
         </geometry>
+        <max_contacts>3</max_contacts>
       </collision>
     </link>
   </model>

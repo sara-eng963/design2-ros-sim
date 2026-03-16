@@ -21,6 +21,7 @@
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
+        <max_contacts>3</max_contacts>
       </collision>
 
     </link>
