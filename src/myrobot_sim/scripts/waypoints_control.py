@@ -50,6 +50,9 @@ detour_start_x = None
 detour_start_y = None
 detour_reference_yaw = None
 
+original_heading = None
+
+
 
 
 def normalize_angle(angle):
@@ -82,6 +85,7 @@ def control_loop():
     global obstacle_detected
     global startup_time, last_time
     global detour_start_x, detour_start_y,detour_reference_yaw
+    global original_heading
 
     current_time = node.get_clock().now()
 
@@ -106,12 +110,12 @@ def control_loop():
     y += delta_y
     yaw = normalize_angle(yaw + delta_yaw)
 
-    target_x, target_y, target_yaw = waypoints[current_waypoint]
+    target_x, target_y, goal_yaw = waypoints[current_waypoint]
     node.get_logger().info(
         "\n---------------- DEBUG ----------------\n"
         f"CURRENT STATE: {state}\n"
         f"POSITION -> x: {x:.3f}, y: {y:.3f}, yaw: {math.degrees(yaw):.2f}°\n"
-        f"TARGET   -> x: {target_x:.3f}, y: {target_y:.3f}, yaw: {math.degrees(target_yaw):.2f}°\n"
+        f"TARGET   -> x: {target_x:.3f}, y: {target_y:.3f}, yaw: {math.degrees(goal_yaw):.2f}°\n"
         f"VELOCITY -> linear: {linear_vel:.3f}, angular: {angular_vel:.3f}\n"
         f"OBSTACLE DETECTED: {obstacle_detected}\n"
         "--------------------------------------",
@@ -143,8 +147,16 @@ def control_loop():
 
     # Avoid rotate
     if state == "avoid_rotate":
-        # Always point to +90° (π/2 radians)
-        detour_yaw = math.pi/2
+        if original_heading == 0.0:          # facing north
+            detour_yaw = math.pi/2           # east
+        elif original_heading == -math.pi/2: # facing west
+            detour_yaw = 0.0                 # north
+        elif original_heading == math.pi/2:  # facing east
+            detour_yaw = math.pi             # south
+        elif original_heading == math.pi:    # facing south
+            detour_yaw = -math.pi/2          # west
+        else:
+            detour_yaw = math.pi/2           # fallback
         error = normalize_angle(detour_yaw - yaw)
 
         if abs(error) > ANGLE_TOL:
@@ -163,17 +175,26 @@ def control_loop():
         dy_d = y - detour_start_y
         dist = math.sqrt(dx_d**2 + dy_d**2)
 
+        # lock yaw during detour
+        cmd.twist.angular.z = 0.0
+
         if dist < 1.2:   # move sideways for 0.7 m
             cmd.twist.linear.x = 0.2
         else:
             cmd.twist.linear.x = 0.0
-            state = "align_y"
-
+        # Decide next alignment based on original heading
+            if original_heading in [0.0, math.pi]:       # was going along Y
+                state = "align_y"                        # now fix y
+            elif original_heading in [math.pi/2, -math.pi/2]:  # was going along X
+                state = "align_x"                        # now fix x
+            else:
+                state = "align_x"  # fallback
 
         # Align X
     elif state == "align_x":
         # +X → yaw = +π/2, -X → yaw = -π/2
         target_yaw = math.pi/2 if dx > 0 else -math.pi/2
+        original_heading = target_yaw
         error = normalize_angle(target_yaw - yaw)
 
         if abs(dx) < DIST_TOL:
@@ -198,11 +219,11 @@ def control_loop():
     elif state == "align_y":
         # +Y → yaw = π, -Y → yaw = 0
         target_yaw = math.pi if dy > 0 else 0.0
+        original_heading = target_yaw
         error = normalize_angle(target_yaw - yaw)
 
         if abs(dy) < DIST_TOL:
-            current_waypoint = (current_waypoint + 1) % len(waypoints)
-            state = "align_x"
+            state = "rotate_goal"
         elif abs(error) > ANGLE_TOL:
             cmd.twist.angular.z = max(min(K_ANG * error, MAX_ANG), -MAX_ANG)
         else:
@@ -223,9 +244,19 @@ def control_loop():
                 # Still need to fix X → go to align_x
                 state = "align_x"
             else:
-                # Both X and Y are correct → advance waypoint
-                current_waypoint = (current_waypoint + 1) % len(waypoints)
-                state = "align_x"
+                # Both X and Y are correct -> rotate to final waypoint yaw
+                state = "rotate_goal"
+
+    # Rotate to final waypoint orientation after position is reached
+    elif state == "rotate_goal":
+        goal_error = normalize_angle(goal_yaw - yaw)
+
+        if abs(goal_error) > ANGLE_TOL:
+            cmd.twist.angular.z = max(min(K_ANG * goal_error, MAX_ANG), -MAX_ANG)
+        else:
+            cmd.twist.angular.z = 0.0
+            current_waypoint = (current_waypoint + 1) % len(waypoints)
+            state = "align_x"
 
 
 
