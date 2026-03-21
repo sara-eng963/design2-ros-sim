@@ -19,6 +19,7 @@ from launch_ros.substitutions import FindPackageShare
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.parameter_descriptions import ParameterValue
+from launch.actions import TimerAction
 
 
 def generate_launch_description():
@@ -74,7 +75,7 @@ def generate_launch_description():
 
             # Gazebo_Control
             '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
-            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            #'/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU',
             '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
@@ -104,16 +105,25 @@ def generate_launch_description():
     )
 
     # controller spawn
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_state_broadcaster"],
+    joint_state_broadcaster_spawner = TimerAction(
+        period=5.0,
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["joint_state_broadcaster"],
+            )
+        ]
     )
-
-    diff_drive_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["diff_drive_controller"],
+    diff_drive_controller_spawner = TimerAction(
+        period=7.0,  # start a bit later than joint_state_broadcaster
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["diff_drive_controller"],
+            )
+        ]
     )
 
     return LaunchDescription([

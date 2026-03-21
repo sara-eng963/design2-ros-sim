@@ -4,12 +4,12 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import TwistStamped
 from nav_msgs.msg import Odometry
-from rosgraph_msgs.msg import Clock
 from sensor_msgs.msg import Imu
 import math
 import tf_transformations
+from std_msgs.msg import Bool
 
-# Add all the global variables
+# Global variables
 yaw = 0.0
 roll = 0.0
 pitch = 0.0
@@ -22,158 +22,219 @@ angular_vel = 0.0
 
 last_time = None
 
-# Defined Waypoints
-waypoints = [ # x , y , yaw in radians (orientation)
-    (0.0, 0.0, 0.0),  # starting point
-    (1.0, 0.0, 0.0),
+ANGLE_TOL = 0.05
+DIST_TOL = 0.05
+MAX_LIN = 0.5
+MAX_ANG = 1.0
+K_ANG = 2.0
+
+waypoints = [
+    (3.0, 0.0, 0.0),
+    (-3.0, 0.0, 0.0),
+    (0.0, -9.0, 0.0),
+    (0.0, 3.0, 0.0),
     (1.0, 1.0, math.pi / 2),
     (0.0, 1.0, math.pi)
 ]
 
-current_waypoint = 0 # index of the current waypoint in the waypoints list
-state = "rotate_to_target"
+current_waypoint = 0
+state = "align_x"
 
 node = None
 cmd_pub = None
 
+obstacle_detected = False
+startup_time = None
 
-# normalize the angle between -pi to pi
+detour_start_x = None
+detour_start_y = None
+detour_reference_yaw = None
+
+
+
 def normalize_angle(angle):
     return math.atan2(math.sin(angle), math.cos(angle))
 
 
-# IMU topic callback function
 def imu_callback(msg):
     global yaw, roll, pitch
-
     q = msg.orientation
     quaternion = (q.x, q.y, q.z, q.w)
     roll, pitch, yaw_val = tf_transformations.euler_from_quaternion(quaternion)
-
-    roll = roll
-    pitch = pitch
     yaw = yaw_val
 
 
-# odom topic callback function
 def odom_callback(msg):
     global linear_vel, angular_vel
-
+    # Only store velocities, don't touch x/y
     linear_vel = msg.twist.twist.linear.x
     angular_vel = msg.twist.twist.angular.z
 
 
-# clock topic callback function
-def clock_callback(msg):
-    global x, y, yaw
-
-    sim_time = msg.clock
-    if sim_time.sec == 0:
-        x = 0.0
-        y = 0.0
-        yaw = 0.0
+def obstacle_callback(msg):
+    global obstacle_detected
+    obstacle_detected = msg.data
 
 
 def control_loop():
     global x, y, yaw
-    global linear_vel, angular_vel
-    global last_time
     global current_waypoint, state
+    global obstacle_detected
+    global startup_time, last_time
+    global detour_start_x, detour_start_y,detour_reference_yaw
 
-    node.get_logger().info("Control loop")
+    current_time = node.get_clock().now()
 
-    current_time = node.get_clock().now() # in nanoseconds
+    if startup_time is None:
+        startup_time = current_time
+
+    if (current_time - startup_time).nanoseconds / 1e9 < 2.0:
+        return
 
     if last_time is None:
         last_time = current_time
         return
 
-    # get the time difference
-    dt = (current_time - last_time).nanoseconds / 1e9 # to seconds
+    # integrate velocities to update pose
+    dt = (current_time - last_time).nanoseconds / 1e9
     last_time = current_time
+    delta_x = linear_vel * math.sin(yaw) * dt
+    delta_y = -linear_vel * math.cos(yaw) * dt
+    delta_yaw = angular_vel * dt
 
-    v = linear_vel
-    w = angular_vel
-
-    # calculate the distance moved in x and y
-    delta_x = v * math.cos(yaw) * dt # orientation we got from imu
-    delta_y = v * math.sin(yaw) * dt
-    delta_yaw = w * dt
-
-    # update the current position of the robot
     x += delta_x
     y += delta_y
-    yaw += delta_yaw
-    yaw = normalize_angle(yaw) # keep the yaw between -pi and pi
+    yaw = normalize_angle(yaw + delta_yaw)
 
-    # print the position, orientation and velocity of the robot
-    node.get_logger().info(
-        f"Position -> x: {x:.3f}, y: {y:.3f} | "
-        f"yaw: {math.degrees(yaw):.2f}° | "
-        f"Vel -> linear: {linear_vel:.3f}, "
-        f"angular: {angular_vel:.3f}"
-    )
-
-    # get the target waypoint
     target_x, target_y, target_yaw = waypoints[current_waypoint]
+    node.get_logger().info(
+        "\n---------------- DEBUG ----------------\n"
+        f"CURRENT STATE: {state}\n"
+        f"POSITION -> x: {x:.3f}, y: {y:.3f}, yaw: {math.degrees(yaw):.2f}°\n"
+        f"TARGET   -> x: {target_x:.3f}, y: {target_y:.3f}, yaw: {math.degrees(target_yaw):.2f}°\n"
+        f"VELOCITY -> linear: {linear_vel:.3f}, angular: {angular_vel:.3f}\n"
+        f"OBSTACLE DETECTED: {obstacle_detected}\n"
+        "--------------------------------------",
+        throttle_duration_sec=1.0
+    )
+    node.get_logger().info(f"linear_vel raw: {linear_vel:.3f} m/s", throttle_duration_sec=1.0)
 
-    # get the difference in current and target pose
+
     dx = target_x - x
     dy = target_y - y
-    distance = math.sqrt(dx**2 + dy**2)
-
-    # the angle to be rotated to the target pose
     angle_to_target = math.atan2(dy, dx)
     angle_error = normalize_angle(angle_to_target - yaw)
 
-    # calculate the difference in target angle and current angle
-    final_yaw_error = normalize_angle(target_yaw - yaw)
-
     node.get_logger().info(
-        f"Target Pose -> x: {target_x:.3f}, y: {target_y:.3f}, yaw: {target_yaw:.3f}"
+        f"ERRORS -> dx: {dx:.3f}, dy: {dy:.3f}, "
+        f"angle_to_target: {math.degrees(angle_to_target):.2f}°, "
+        f"angle_error: {math.degrees(angle_error):.2f}°",
+        throttle_duration_sec=1.0
     )
-    node.get_logger().info(f'Final Yaw Error -> {final_yaw_error:.3f}')
 
-    # set the configurations of the cmd_vel
     cmd = TwistStamped()
     cmd.header.stamp = node.get_clock().now().to_msg()
-    cmd.header.frame_id = "Trial_idk" # or base_link?
+    cmd.header.frame_id = "base_link"
 
-    # State Machine
-    # First rotate to the target pose direction
-    if state == "rotate_to_target":
-        node.get_logger().info("rotate_to_target state")
+    # Obstacle handling
+    if obstacle_detected:
+      #  if state not in ["avoid_rotate", "avoid_move"]:
+            state = "avoid_rotate"
 
-        if abs(angle_error) > 0.005:
-            cmd.twist.angular.z = -1.5 * angle_error
+    # Avoid rotate
+    if state == "avoid_rotate":
+        # Always point to +90° (π/2 radians)
+        detour_yaw = math.pi/2
+        error = normalize_angle(detour_yaw - yaw)
+
+        if abs(error) > ANGLE_TOL:
+            cmd.twist.angular.z = max(min(K_ANG * error, MAX_ANG), -MAX_ANG)
         else:
-            state = "move_forward"
+            cmd.twist.angular.z = 0.0
+            detour_start_x, detour_start_y = x, y
+            state = "avoid_move"
 
-    # Second move forward to the pose
-    elif state == "move_forward":
-        node.get_logger().info("move_forward state")
 
-        if distance > 0.05:
-            cmd.twist.linear.x = 0.5 * distance
+
+
+    # Avoid move (sideways detour)
+    elif state == "avoid_move":
+        dx_d = x - detour_start_x
+        dy_d = y - detour_start_y
+        dist = math.sqrt(dx_d**2 + dy_d**2)
+
+        if dist < 1.2:   # move sideways for 0.7 m
+            cmd.twist.linear.x = 0.2
         else:
-            state = "rotate_to_final"
+            cmd.twist.linear.x = 0.0
+            state = "align_y"
 
-    # Third rotate to the final target angle
-    elif state == "rotate_to_final":
-        node.get_logger().info("rotate_to_final state")
 
-        if abs(final_yaw_error) > 0.005:
-            cmd.twist.angular.z = -1.5 * final_yaw_error
+        # Align X
+    elif state == "align_x":
+        # +X → yaw = +π/2, -X → yaw = -π/2
+        target_yaw = math.pi/2 if dx > 0 else -math.pi/2
+        error = normalize_angle(target_yaw - yaw)
+
+        if abs(dx) < DIST_TOL:
+            state = "align_y"
+        elif abs(error) > ANGLE_TOL:
+            cmd.twist.angular.z = max(min(K_ANG * error, MAX_ANG), -MAX_ANG)
         else:
+            state = "move_x"
+
+    # Move X
+    elif state == "move_x":
+        target_yaw = math.pi/2 if dx > 0 else -math.pi/2
+        error = normalize_angle(target_yaw - yaw)
+
+        if abs(dx) > DIST_TOL:
+            cmd.twist.linear.x = min(0.5 * abs(dx), MAX_LIN)
+            cmd.twist.angular.z = K_ANG * error
+        else:
+            state = "align_y"
+
+    # Align Y
+    elif state == "align_y":
+        # +Y → yaw = π, -Y → yaw = 0
+        target_yaw = math.pi if dy > 0 else 0.0
+        error = normalize_angle(target_yaw - yaw)
+
+        if abs(dy) < DIST_TOL:
             current_waypoint = (current_waypoint + 1) % len(waypoints)
-            state = "rotate_to_target"
+            state = "align_x"
+        elif abs(error) > ANGLE_TOL:
+            cmd.twist.angular.z = max(min(K_ANG * error, MAX_ANG), -MAX_ANG)
+        else:
+            state = "move_y"
 
-    # send the velocity command
+    # Move Y
+    elif state == "move_y":
+        target_yaw = math.pi if dy > 0 else 0.0
+        error = normalize_angle(target_yaw - yaw)
+
+        if abs(dy) > DIST_TOL:
+            # Keep moving along Y
+            cmd.twist.linear.x = min(0.5 * abs(dy), MAX_LIN)
+            cmd.twist.angular.z = K_ANG * error
+        else:
+            # Y is correct, now check X
+            if abs(dx) > DIST_TOL:
+                # Still need to fix X → go to align_x
+                state = "align_x"
+            else:
+                # Both X and Y are correct → advance waypoint
+                current_waypoint = (current_waypoint + 1) % len(waypoints)
+                state = "align_x"
+
+
+
+
     cmd_pub.publish(cmd)
 
 
 def main():
-    global node, cmd_pub, last_time
+    global node, cmd_pub
 
     rclpy.init()
 
@@ -187,13 +248,10 @@ def main():
 
     node.create_subscription(Imu, '/imu', imu_callback, 10)
     node.create_subscription(Odometry, '/diff_drive_controller/odom', odom_callback, 10)
-    node.create_subscription(Clock, '/clock', clock_callback, 10)
+    node.create_subscription(Bool, '/obstacle_detected', obstacle_callback, 10)
 
     node.create_timer(0.05, control_loop)
 
-    last_time = node.get_clock().now()
-
-    node.get_logger().info("Robot State Printer Started")
     node.get_logger().info("Waypoint control Node Started")
 
     rclpy.spin(node)

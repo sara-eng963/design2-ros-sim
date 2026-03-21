@@ -372,6 +372,55 @@
       effort="10"
       velocity="1" />
   </joint>
+
+<!-- TRANSMISSIONS -->
+
+<transmission name="FL_Wheel_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="FL_Wheel_Joint">
+    <hardwareInterface>velocity</hardwareInterface>
+  </joint>
+  <actuator name="FL_Wheel_motor">
+    <hardwareInterface>velocity</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="RL_Wheel_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="RL_Wheel_Joint">
+    <hardwareInterface>velocity</hardwareInterface>
+  </joint>
+  <actuator name="RL_Wheel_motor">
+    <hardwareInterface>velocity</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="RR_Wheel_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="RR_Wheel_Joint">
+    <hardwareInterface>velocity</hardwareInterface>
+  </joint>
+  <actuator name="RR_Wheel_motor">
+    <hardwareInterface>velocity</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="FR_Wheel_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="FR_Wheel_Joint">
+    <hardwareInterface>velocity</hardwareInterface>
+  </joint>
+  <actuator name="FR_Wheel_motor">
+    <hardwareInterface>velocity</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+
+
   <ros2_control name="RobotSystem" type="system">
 <hardware>
 <plugin>gz_ros2_control/GazeboSimSystem</plugin>
@@ -461,7 +510,7 @@ izz="1e-5"/>
 <joint name="ultrasonic_joint" type="fixed">
 <parent link="base_link"/>
 <child link="ultrasonic_link"/>
-<origin xyz="0.15 0 0.07" rpy="0 0 0"/>
+<origin xyz="0.15 0 -0.1" rpy="0 0 0"/>
 </joint>
 <gazebo>
 <plugin filename="gz_ros2_control-system"
@@ -492,8 +541,8 @@ name="gz::sim::systems::Imu"/>
     <horizontal>
       <samples>640</samples>
       <resolution>1</resolution>
-      <min_angle>-0.2618</min_angle>
-      <max_angle>0.2618</max_angle>
+      <min_angle>-0.7854</min_angle>
+      <max_angle>0.7854</max_angle>
     </horizontal>
   <vertical>
   <samples>1</samples>

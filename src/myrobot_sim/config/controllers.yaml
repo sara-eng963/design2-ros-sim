@@ -21,16 +21,16 @@ diff_drive_controller:
     left_wheel_names: ['FL_Wheel_Joint', 'RL_Wheel_Joint']
     right_wheel_names: ['FR_Wheel_Joint', 'RR_Wheel_Joint']
     wheel_separation: 0.353
-    wheel_radius: 0.12566
+    wheel_radius: 0.0485
     wheel_separation_multiplier: 1.0
     left_wheel_radius_multiplier: 1.0
     right_wheel_radius_multiplier: 1.0
     publish_rate: 50.0
     odom_frame_id: odom
-    base_frame_id: Trial_idk  
+    base_frame_id: base_link #changed my trial idk  
     pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
-    open_loop: true
+    open_loop: false
     enable_odom_tf: true
     cmd_vel_timeout: 0.5
     use_stamped_vel: true  # for sensor fusion it must be stamped
