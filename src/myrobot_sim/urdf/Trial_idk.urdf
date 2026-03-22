@@ -488,7 +488,7 @@
 <child link="imu_link"/>
 <origin xyz="0 0 0.05" rpy="0 0 0"/>
 </joint>
-<link name="ultrasonic_link">
+<link name="ultrasonic_center_link">
 <visual>
 <geometry>
 <cylinder radius="0.03" length="0.05"/>
@@ -507,10 +507,60 @@ iyy="1e-5" iyz="0"
 izz="1e-5"/>
 </inertial>
 </link>
-<joint name="ultrasonic_joint" type="fixed">
+<joint name="ultrasonic_center_joint" type="fixed">
 <parent link="base_link"/>
-<child link="ultrasonic_link"/>
+<child link="ultrasonic_center_link"/>
 <origin xyz="0.15 0 -0.1" rpy="0 0 0"/>
+</joint>
+
+<link name="ultrasonic_left_link">
+<visual>
+<geometry>
+<cylinder radius="0.03" length="0.05"/>
+</geometry>
+</visual>
+<collision>
+<geometry>
+<cylinder radius="0.03" length="0.05"/>
+</geometry>
+</collision>
+<inertial>
+<mass value="0.1"/>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<inertia ixx="1e-5" ixy="0" ixz="0"
+iyy="1e-5" iyz="0"
+izz="1e-5"/>
+</inertial>
+</link>
+<joint name="ultrasonic_left_joint" type="fixed">
+<parent link="base_link"/>
+<child link="ultrasonic_left_link"/>
+<origin xyz="0.128 0.115 -0.1" rpy="0 0 0.5236"/>
+</joint>
+
+<link name="ultrasonic_right_link">
+<visual>
+<geometry>
+<cylinder radius="0.03" length="0.05"/>
+</geometry>
+</visual>
+<collision>
+<geometry>
+<cylinder radius="0.03" length="0.05"/>
+</geometry>
+</collision>
+<inertial>
+<mass value="0.1"/>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<inertia ixx="1e-5" ixy="0" ixz="0"
+iyy="1e-5" iyz="0"
+izz="1e-5"/>
+</inertial>
+</link>
+<joint name="ultrasonic_right_joint" type="fixed">
+<parent link="base_link"/>
+<child link="ultrasonic_right_link"/>
+<origin xyz="0.128 -0.115 -0.1" rpy="0 0 -0.5236"/>
 </joint>
 <gazebo>
 <plugin filename="gz_ros2_control-system"
@@ -532,29 +582,89 @@ filename="gz-sim-imu-system"
 name="gz::sim::systems::Imu"/>
 </sensor>
 </gazebo>
-<gazebo reference="ultrasonic_link">
-<sensor name="lidar_sensor" type="gpu_lidar">
+<gazebo reference="ultrasonic_center_link">
+<sensor name="ultrasonic_center" type="gpu_lidar">
 <update_rate>50</update_rate>
 <topic>scan</topic>
 <ray>
   <scan>
     <horizontal>
-      <samples>640</samples>
+      <samples>30</samples>
       <resolution>1</resolution>
-      <min_angle>-0.7854</min_angle>
-      <max_angle>0.7854</max_angle>
+      <min_angle>-0.2618</min_angle>
+      <max_angle>0.2618</max_angle>
     </horizontal>
-  <vertical>
-  <samples>1</samples>
-  <resolution>0.01</resolution>
-  <min_angle>0</min_angle>
-  <max_angle>0</max_angle>
-  </vertical>
+    <vertical>
+      <samples>1</samples>
+      <resolution>1</resolution>
+      <min_angle>0</min_angle>
+      <max_angle>0</max_angle>
+    </vertical>
   </scan>
   <range>
-  <min>0.08</min>
-  <max>10.0</max>
-  <resolution>0.01</resolution>
+    <min>0.08</min>
+    <max>10.0</max>
+    <resolution>0.01</resolution>
+  </range>
+</ray>
+<always_on>1</always_on>
+<visualize>true</visualize>
+</sensor>
+</gazebo>
+
+<gazebo reference="ultrasonic_left_link">
+<sensor name="ultrasonic_left" type="gpu_lidar">
+<update_rate>50</update_rate>
+<topic>scan_left</topic>
+<ray>
+  <scan>
+    <horizontal>
+      <samples>30</samples>
+      <resolution>1</resolution>
+      <min_angle>-0.2618</min_angle>
+      <max_angle>0.2618</max_angle>
+    </horizontal>
+    <vertical>
+      <samples>1</samples>
+      <resolution>1</resolution>
+      <min_angle>0</min_angle>
+      <max_angle>0</max_angle>
+    </vertical>
+  </scan>
+  <range>
+    <min>0.08</min>
+    <max>10.0</max>
+    <resolution>0.01</resolution>
+  </range>
+</ray>
+<always_on>1</always_on>
+<visualize>true</visualize>
+</sensor>
+</gazebo>
+
+<gazebo reference="ultrasonic_right_link">
+<sensor name="ultrasonic_right" type="gpu_lidar">
+<update_rate>50</update_rate>
+<topic>scan_right</topic>
+<ray>
+  <scan>
+    <horizontal>
+      <samples>30</samples>
+      <resolution>1</resolution>
+      <min_angle>-0.2618</min_angle>
+      <max_angle>0.2618</max_angle>
+    </horizontal>
+    <vertical>
+      <samples>1</samples>
+      <resolution>1</resolution>
+      <min_angle>0</min_angle>
+      <max_angle>0</max_angle>
+    </vertical>
+  </scan>
+  <range>
+    <min>0.08</min>
+    <max>10.0</max>
+    <resolution>0.01</resolution>
   </range>
 </ray>
 <always_on>1</always_on>

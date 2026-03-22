@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import rclpy
+import rclpy.parameter
 from rclpy.node import Node
 from geometry_msgs.msg import TwistStamped
 from nav_msgs.msg import Odometry
@@ -29,9 +30,9 @@ MAX_ANG = 1.0
 K_ANG = 2.0
 
 waypoints = [
-    (3.0, 0.0, 0.0),
-    (-3.0, 0.0, 0.0),
-    (0.0, -9.0, 0.0),
+    (1.0, 0.0, 0.0),
+    (-1.0, 0.0, 0.0),
+    (0.0, -3.0, 0.0),
     (0.0, 3.0, 0.0),
     (1.0, 1.0, math.pi / 2),
     (0.0, 1.0, math.pi)
@@ -52,11 +53,23 @@ detour_reference_yaw = None
 
 original_heading = None
 
+obstacle_first_seen_time = None
+dynamic_wait_start_time = None
+pre_obstacle_state = None
+
 
 
 
 def normalize_angle(angle):
     return math.atan2(math.sin(angle), math.cos(angle))
+
+
+def snap_to_cardinal(angle):
+    # The 4 clean axis angles: 0°, 90°, 180°, -90°
+    cardinals = [0.0, math.pi/2, math.pi, -math.pi/2]
+    # For each cardinal, compute the shortest angular distance to 'angle',
+    # then return whichever cardinal has the smallest distance (i.e. the nearest one)
+    return min(cardinals, key=lambda c: abs(normalize_angle(c - angle)))
 
 
 def imu_callback(msg):
@@ -86,6 +99,7 @@ def control_loop():
     global startup_time, last_time
     global detour_start_x, detour_start_y,detour_reference_yaw
     global original_heading
+    global obstacle_first_seen_time, dynamic_wait_start_time, pre_obstacle_state
 
     current_time = node.get_clock().now()
 
@@ -142,28 +156,55 @@ def control_loop():
 
     # Obstacle handling
     if obstacle_detected:
-      #  if state not in ["avoid_rotate", "avoid_move"]:
-            state = "avoid_rotate"
+        if state not in ["avoid_rotate", "avoid_move", "classifying_obstacle", "dynamic_wait"]:
+            pre_obstacle_state = state
+            obstacle_first_seen_time = current_time
+            state = "classifying_obstacle"
+            node.get_logger().info("Obstacle detected — classifying (3s wait)...", throttle_duration_sec=1.0)
+        elif state == "dynamic_wait":
+            # New obstacle appeared during dynamic wait → re-classify
+            obstacle_first_seen_time = current_time
+            state = "classifying_obstacle"
+            node.get_logger().info("New obstacle during dynamic wait — re-classifying...", throttle_duration_sec=1.0)
+
+    # Classifying obstacle: robot stops and waits 3s to determine static vs dynamic
+    if state == "classifying_obstacle":
+        cmd.twist.linear.x = 0.0
+        cmd.twist.angular.z = 0.0
+        elapsed = (current_time - obstacle_first_seen_time).nanoseconds / 1e9
+        if elapsed >= 2.0:
+            if obstacle_detected:
+                node.get_logger().info("Static obstacle confirmed — starting avoidance")
+                state = "avoid_rotate"
+            else:
+                node.get_logger().info("Dynamic obstacle — stopping for 2 seconds")
+                dynamic_wait_start_time = current_time
+                state = "dynamic_wait"
+
+    # Dynamic obstacle wait: obstacle cleared, stop 4s then resume
+    elif state == "dynamic_wait":
+        cmd.twist.linear.x = 0.0
+        cmd.twist.angular.z = 0.0
+        elapsed = (current_time - dynamic_wait_start_time).nanoseconds / 1e9
+        if elapsed >= 2.0:
+            node.get_logger().info("Dynamic obstacle cleared — resuming navigation")
+            obstacle_first_seen_time = None
+            dynamic_wait_start_time = None
+            state = pre_obstacle_state if pre_obstacle_state else "align_x"
+            pre_obstacle_state = None
 
     # Avoid rotate
-    if state == "avoid_rotate":
-        if original_heading == 0.0:          # facing north
-            detour_yaw = math.pi/2           # east
-        elif original_heading == -math.pi/2: # facing west
-            detour_yaw = 0.0                 # north
-        elif original_heading == math.pi/2:  # facing east
-            detour_yaw = math.pi             # south
-        elif original_heading == math.pi:    # facing south
-            detour_yaw = -math.pi/2          # west
-        else:
-            detour_yaw = math.pi/2           # fallback
-        error = normalize_angle(detour_yaw - yaw)
+    elif state == "avoid_rotate":
+        if detour_reference_yaw is None:
+            detour_reference_yaw = normalize_angle(snap_to_cardinal(yaw) + math.pi / 2)
+        error = normalize_angle(detour_reference_yaw - yaw)
 
         if abs(error) > ANGLE_TOL:
             cmd.twist.angular.z = max(min(K_ANG * error, MAX_ANG), -MAX_ANG)
         else:
             cmd.twist.angular.z = 0.0
             detour_start_x, detour_start_y = x, y
+            detour_reference_yaw = None
             state = "avoid_move"
 
 
@@ -178,7 +219,7 @@ def control_loop():
         # lock yaw during detour
         cmd.twist.angular.z = 0.0
 
-        if dist < 1.2:   # move sideways for 0.7 m
+        if dist < 0.5:   # move sideways for 0.5 m
             cmd.twist.linear.x = 0.2
         else:
             cmd.twist.linear.x = 0.0
@@ -269,7 +310,9 @@ def main():
 
     rclpy.init()
 
-    node = Node('square_follower')
+    node = Node('square_follower', parameter_overrides=[
+        rclpy.parameter.Parameter('use_sim_time', rclpy.parameter.Parameter.Type.BOOL, True)
+    ])
 
     cmd_pub = node.create_publisher(
         TwistStamped,

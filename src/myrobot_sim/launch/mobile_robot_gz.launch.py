@@ -79,6 +79,8 @@ def generate_launch_description():
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU',
             '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/scan_left@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/scan_right@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             ],
         remappings=[
             ('/world/empty/model/Robot_Body_URDF/joint_state', 'joint_states'),

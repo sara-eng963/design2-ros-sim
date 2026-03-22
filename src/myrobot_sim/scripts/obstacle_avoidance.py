@@ -3,55 +3,46 @@
 import rclpy 
 from rclpy.node import Node 
 from sensor_msgs.msg import LaserScan 
-from geometry_msgs.msg import TwistStamped 
 import numpy as np 
-from std_msgs.msg import Bool  # add this line
+from std_msgs.msg import Bool
  
-cmd_pub = None 
+cmd_pub = None
 safe_distance = 0.5
 node = None
 obstacle_pub = None
 
-def scan_callback(msg):
-    global safe_distance, cmd_pub, node
+def check_scan(msg):
     ranges = np.array(msg.ranges)
-    ranges = np.nan_to_num(ranges, nan=10.0, posinf=10.0, neginf=10.0) 
+    ranges = np.nan_to_num(ranges, nan=10.0, posinf=10.0, neginf=10.0)
+    ranges = ranges[ranges > msg.range_min]
+    if len(ranges) == 0:
+        return False
+    return float(np.min(ranges)) < safe_distance
 
-    # Don't slice at all — the whole array is already your front view
-    front_ranges = ranges
-    front_ranges = front_ranges[front_ranges > msg.range_min]  # filter invalid readings
+def scan_callback(msg):
+    publish_obstacle(check_scan(msg))
 
- 
-    if len(ranges) == 0: 
-            return 
-    
-    
-    # front_ranges = np.concatenate((ranges[:30], ranges[-30:])) 
- 
-    min_distance = np.min(front_ranges) 
- 
-    cmd = TwistStamped() 
-    cmd.header.stamp = node.get_clock().now().to_msg() 
-    cmd.header.frame_id = "Trial_idk" # or base_link?
- 
-    if min_distance < safe_distance: 
-       # cmd.twist.linear.x = 0.0 
-       # cmd.twist.angular.z = 0.5 # will only use this code as a sensor and not to move
-        node.get_logger().info("Obstacle detected ") 
-       # cmd_pub.publish(cmd)
-        obstacle_pub.publish(Bool(data=True)) # to tell waypoints  
-    else: 
+def scan_left_callback(msg):
+    publish_obstacle(check_scan(msg))
+
+def scan_right_callback(msg):
+    publish_obstacle(check_scan(msg))
+
+def publish_obstacle(detected):
+    if detected:
+        node.get_logger().info("Obstacle detected", throttle_duration_sec=1.0)
+        obstacle_pub.publish(Bool(data=True))
+    else:
         obstacle_pub.publish(Bool(data=False))
-        return  # DO NOT publish cmd_vel
-    # cmd_pub.publish(cmd) # 7atetha fo2 
 
 def main():
-    global cmd_pub, node, obstacle_pub #to use it in other functions
+    global node, obstacle_pub
     rclpy.init()
     node = Node("Obstacle_Avoidance_Node")
-    cmd_pub = node.create_publisher(TwistStamped, '/diff_drive_controller/cmd_vel', 10)
     obstacle_pub = node.create_publisher(Bool, '/obstacle_detected', 10)
     node.create_subscription(LaserScan, '/scan', scan_callback, 10)
+    node.create_subscription(LaserScan, '/scan_left', scan_left_callback, 10)
+    node.create_subscription(LaserScan, '/scan_right', scan_right_callback, 10)
     node.get_logger().info("Node is initialized")
     rclpy.spin(node)
     node.destroy_node()

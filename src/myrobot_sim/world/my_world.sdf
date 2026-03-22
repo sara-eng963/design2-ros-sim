@@ -164,8 +164,42 @@
       <pose>0 0 0 0 0 0</pose>
     </include>
 -->
+
+    <actor name="walking_person">
+      <skin>
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walking">
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <speed>0.5</speed>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <script>
+        <loop>true</loop>
+        <delay_start>0.0</delay_start>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>0</time>
+            <pose>-2.0 1.2 1.0 0 0 1.5708</pose>
+          </waypoint>
+          <waypoint>
+            <time>10</time>
+            <pose>2.0 1.2 1.0 0 0 1.5708</pose>
+          </waypoint>
+          <waypoint>
+            <time>20</time>
+            <pose>-2.0 1.2 1.0 0 0 -1.5708</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+
+
+
     <light name='sun' type='directional'>
-      <pose>0 0 10 0 0 0</pose>
       <cast_shadows>true</cast_shadows>
       <intensity>1</intensity>
       <direction>-0.5 0.10000000000000001 -0.90000000000000002</direction>
