@@ -128,6 +128,52 @@ def generate_launch_description():
         ]
     )
 
+    arm_controller_spawner = TimerAction(
+        period=9.0,  # spawn after diff_drive controller
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["arm_controller"],
+            )
+        ]
+    )
+
+    goal_publisher_node = Node(
+        package='myrobot_sim',
+        executable='goal_publisher.py',
+        output='screen',
+        parameters=[{'use_sim_time': True}]
+    )
+
+    obstacle_avoidance_node = Node(
+        package='myrobot_sim',
+        executable='obstacle_avoidance.py',
+        output='screen',
+        parameters=[{'use_sim_time': True}]
+    )
+
+    waypoints_control_node = Node(
+        package='myrobot_sim',
+        executable='waypoints_control.py',
+        output='screen',
+        parameters=[{'use_sim_time': True}]
+    )
+
+    arm_control_node = Node(
+        package='myrobot_sim',
+        executable='arm_control.py',
+        output='screen',
+        parameters=[{'use_sim_time': True}]
+    )
+
+    start_stop_gui_node = Node(
+        package='myrobot_sim',
+        executable='start_stop_gui.py',
+        output='screen',
+        parameters=[{'use_sim_time': True}]
+    )
+
     return LaunchDescription([
         gazebo,
         bridge_gz,
@@ -135,4 +181,10 @@ def generate_launch_description():
         robot_state_publisher_node,
         joint_state_broadcaster_spawner,
         diff_drive_controller_spawner,
+        arm_controller_spawner,
+        obstacle_avoidance_node,
+        waypoints_control_node,
+        arm_control_node,
+        goal_publisher_node,
+        start_stop_gui_node,
     ])

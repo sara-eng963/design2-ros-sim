@@ -8,12 +8,6 @@ controller_manager:
       type: diff_drive_controller/DiffDriveController
     arm_controller:
       type: joint_trajectory_controller/JointTrajectoryController
-      joints:
-        - Arm_Joint
-      gains:
-        Arm_Joint: {p: 10.0, d: 0.1, i: 0.0}
-      state_publish_rate: 50
-      stop_trajectory_duration: 0.5
 
 
 diff_drive_controller:
@@ -51,3 +45,20 @@ diff_drive_controller:
     angular.z.min_acceleration: -1.0
     angular.z.max_jerk: 0.0
     angular.z.min_jerk: 0.0
+
+arm_controller:
+  ros__parameters:
+    joints:
+      - Arm_Joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+    gains:
+      Arm_Joint:
+        p: 10.0
+        d: 0.1
+        i: 0.0
+    state_publish_rate: 50.0
+    stop_trajectory_duration: 0.5
+    allow_nonzero_velocity_at_trajectory_end: false

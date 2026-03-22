@@ -3,12 +3,13 @@
 import rclpy
 import rclpy.parameter
 from rclpy.node import Node
-from geometry_msgs.msg import TwistStamped
+from geometry_msgs.msg import TwistStamped, PoseArray
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Imu
 import math
 import tf_transformations
 from std_msgs.msg import Bool
+from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
 
 # Global variables
 yaw = 0.0
@@ -29,14 +30,8 @@ MAX_LIN = 0.5
 MAX_ANG = 1.0
 K_ANG = 2.0
 
-waypoints = [
-    (1.0, 0.0, 0.0),
-    (-1.0, 0.0, 0.0),
-    (0.0, -3.0, 0.0),
-    (0.0, 3.0, 0.0),
-    (1.0, 1.0, math.pi / 2),
-    (0.0, 1.0, math.pi)
-]
+waypoints = []
+goals_received = False
 
 current_waypoint = 0
 state = "align_x"
@@ -56,6 +51,12 @@ original_heading = None
 obstacle_first_seen_time = None
 dynamic_wait_start_time = None
 pre_obstacle_state = None
+
+arm_done_received = False
+arm_trigger_pub = None
+
+system_started = False
+system_stopped = False
 
 
 
@@ -92,6 +93,47 @@ def obstacle_callback(msg):
     obstacle_detected = msg.data
 
 
+def arm_done_callback(msg):
+    global arm_done_received
+    if msg.data:
+        arm_done_received = True
+
+
+def start_callback(msg):
+    global system_started, system_stopped
+    if msg.data:
+        system_started = True
+        system_stopped = False
+        node.get_logger().info('START signal received — beginning/resuming navigation.')
+
+
+def stop_callback(msg):
+    global system_stopped
+    if msg.data:
+        system_stopped = True
+        node.get_logger().info('STOP signal received — robot halted.')
+
+
+def goals_callback(msg):
+    global waypoints, goals_received, current_waypoint, state
+
+    parsed_waypoints = []
+    for pose in msg.poses:
+        q = pose.orientation
+        _, _, goal_yaw = tf_transformations.euler_from_quaternion((q.x, q.y, q.z, q.w))
+        parsed_waypoints.append((pose.position.x, pose.position.y, goal_yaw))
+
+    if not parsed_waypoints:
+        node.get_logger().warn('Received empty /navigation_goals PoseArray, still waiting for valid goals')
+        return
+
+    waypoints = parsed_waypoints
+    current_waypoint = 0
+    state = "align_x"
+    goals_received = True
+    node.get_logger().info(f'Received {len(waypoints)} navigation goals')
+
+
 def control_loop():
     global x, y, yaw
     global current_waypoint, state
@@ -100,6 +142,25 @@ def control_loop():
     global detour_start_x, detour_start_y,detour_reference_yaw
     global original_heading
     global obstacle_first_seen_time, dynamic_wait_start_time, pre_obstacle_state
+    global arm_done_received, arm_trigger_pub
+    global system_started, system_stopped
+
+    # ── Start / Stop gating ──────────────────────────────────────────────────
+    if system_stopped:
+        cmd = TwistStamped()
+        cmd.header.stamp = node.get_clock().now().to_msg()
+        cmd.header.frame_id = "base_link"
+        cmd_pub.publish(cmd)
+        node.get_logger().info('*** SYSTEM STOPPED — robot halted ***', throttle_duration_sec=2.0)
+        return
+
+    if not system_started:
+        cmd = TwistStamped()
+        cmd.header.stamp = node.get_clock().now().to_msg()
+        cmd.header.frame_id = "base_link"
+        cmd_pub.publish(cmd)
+        node.get_logger().info('Waiting for /start_signal...', throttle_duration_sec=2.0)
+        return
 
     current_time = node.get_clock().now()
 
@@ -107,6 +168,14 @@ def control_loop():
         startup_time = current_time
 
     if (current_time - startup_time).nanoseconds / 1e9 < 2.0:
+        return
+
+    if not goals_received:
+        cmd = TwistStamped()
+        cmd.header.stamp = node.get_clock().now().to_msg()
+        cmd.header.frame_id = "base_link"
+        cmd_pub.publish(cmd)
+        node.get_logger().info("Waiting for /navigation_goals...", throttle_duration_sec=2.0)
         return
 
     if last_time is None:
@@ -296,17 +365,27 @@ def control_loop():
             cmd.twist.angular.z = max(min(K_ANG * goal_error, MAX_ANG), -MAX_ANG)
         else:
             cmd.twist.angular.z = 0.0
+            arm_done_received = False
+            arm_trigger_pub.publish(Bool(data=True))
+            state = "arm_action"
+            node.get_logger().info("Waypoint reached — waiting for arm to complete action.")
+
+    # Arm action: robot holds still while arm does its job
+    elif state == "arm_action":
+        cmd.twist.linear.x = 0.0
+        cmd.twist.angular.z = 0.0
+        if arm_done_received:
+            arm_done_received = False
             current_waypoint = (current_waypoint + 1) % len(waypoints)
             state = "align_x"
-
-
+            node.get_logger().info(f"Arm done — moving to waypoint {current_waypoint}.")
 
 
     cmd_pub.publish(cmd)
 
 
 def main():
-    global node, cmd_pub
+    global node, cmd_pub, arm_trigger_pub
 
     rclpy.init()
 
@@ -320,13 +399,25 @@ def main():
         10
     )
 
+    arm_trigger_pub = node.create_publisher(Bool, '/arm_trigger', 10)
+
     node.create_subscription(Imu, '/imu', imu_callback, 10)
     node.create_subscription(Odometry, '/diff_drive_controller/odom', odom_callback, 10)
     node.create_subscription(Bool, '/obstacle_detected', obstacle_callback, 10)
+    node.create_subscription(PoseArray, '/navigation_goals', goals_callback, 10)
+    node.create_subscription(Bool, '/arm_done', arm_done_callback, 10)
+
+    latched_qos = QoSProfile(
+        depth=1,
+        durability=DurabilityPolicy.TRANSIENT_LOCAL,
+        reliability=ReliabilityPolicy.RELIABLE
+    )
+    node.create_subscription(Bool, '/start_signal', start_callback, latched_qos)
+    node.create_subscription(Bool, '/stop_signal',  stop_callback,  latched_qos)
 
     node.create_timer(0.05, control_loop)
 
-    node.get_logger().info("Waypoint control Node Started")
+    node.get_logger().info("Waypoint control Node Started, waiting for /navigation_goals")
 
     rclpy.spin(node)
 

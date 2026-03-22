@@ -30,7 +30,7 @@ def scan_right_callback(msg):
 
 def publish_obstacle(detected):
     if detected:
-        node.get_logger().info("Obstacle detected", throttle_duration_sec=1.0)
+       # node.get_logger().info("Obstacle detected", throttle_duration_sec=1.0)
         obstacle_pub.publish(Bool(data=True))
     else:
         obstacle_pub.publish(Bool(data=False))

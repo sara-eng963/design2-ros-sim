@@ -20,6 +20,9 @@ PROGRAMS
 scripts/obstacle_avoidance.py 
 scripts/waypoints_control.py 
 scripts/waypoints_test.py 
+scripts/goal_publisher.py
+scripts/arm_control.py
+scripts/start_stop_gui.py
 DESTINATION lib/${PROJECT_NAME} 
 )
 install( 
