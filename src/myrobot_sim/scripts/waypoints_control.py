@@ -2,13 +2,14 @@
 
 import rclpy
 import rclpy.parameter
+import rclpy.duration
 from rclpy.node import Node
 from geometry_msgs.msg import TwistStamped, PoseArray
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Imu
 import math
 import tf_transformations
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, String
 from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
 
 # Global variables
@@ -40,6 +41,7 @@ node = None
 cmd_pub = None
 
 obstacle_detected = False
+obstacle_direction = 'front'   # 'left' | 'right' | 'front'
 startup_time = None
 
 detour_start_x = None
@@ -57,6 +59,14 @@ arm_trigger_pub = None
 
 system_started = False
 system_stopped = False
+
+backup_start_x = None
+backup_start_y = None
+
+approach_start_x = None
+approach_start_y = None
+
+post_arm_cooldown_end = None
 
 
 
@@ -91,6 +101,10 @@ def odom_callback(msg):
 def obstacle_callback(msg):
     global obstacle_detected
     obstacle_detected = msg.data
+
+def obstacle_direction_callback(msg):
+    global obstacle_direction
+    obstacle_direction = msg.data
 
 
 def arm_done_callback(msg):
@@ -144,6 +158,9 @@ def control_loop():
     global obstacle_first_seen_time, dynamic_wait_start_time, pre_obstacle_state
     global arm_done_received, arm_trigger_pub
     global system_started, system_stopped
+    global post_arm_cooldown_end
+    global backup_start_x, backup_start_y
+    global approach_start_x, approach_start_y
 
     # ── Start / Stop gating ──────────────────────────────────────────────────
     if system_stopped:
@@ -223,8 +240,23 @@ def control_loop():
     cmd.header.stamp = node.get_clock().now().to_msg()
     cmd.header.frame_id = "base_link"
 
-    # Obstacle handling
-    if obstacle_detected:
+    # Obstacle handling — ignore obstacles within 51 cm of ANY non-(0,0) waypoint
+    # Also ignore obstacles briefly after arm action (robot needs time to rotate away from shelf)
+    in_post_arm_cooldown = post_arm_cooldown_end is not None and current_time < post_arm_cooldown_end
+
+    near_shelf_waypoint = any(
+        abs(x - wx) <= 0.51 and abs(y - wy) <= 0.51
+        for wx, wy, _ in waypoints
+        if not (abs(wx) < DIST_TOL and abs(wy) < DIST_TOL)
+    )
+
+    if obstacle_detected and near_shelf_waypoint:
+        node.get_logger().info(
+            f"Obstacle ignored — within 51 cm of a shelf waypoint (robot at x={x:.2f}, y={y:.2f})",
+            throttle_duration_sec=1.0
+        )
+
+    elif obstacle_detected and not in_post_arm_cooldown:
         if state not in ["avoid_rotate", "avoid_move", "classifying_obstacle", "dynamic_wait"]:
             pre_obstacle_state = state
             obstacle_first_seen_time = current_time
@@ -255,7 +287,7 @@ def control_loop():
         cmd.twist.linear.x = 0.0
         cmd.twist.angular.z = 0.0
         elapsed = (current_time - dynamic_wait_start_time).nanoseconds / 1e9
-        if elapsed >= 2.0:
+        if elapsed >= 1.0:
             node.get_logger().info("Dynamic obstacle cleared — resuming navigation")
             obstacle_first_seen_time = None
             dynamic_wait_start_time = None
@@ -265,7 +297,27 @@ def control_loop():
     # Avoid rotate
     elif state == "avoid_rotate":
         if detour_reference_yaw is None:
-            detour_reference_yaw = normalize_angle(snap_to_cardinal(yaw) + math.pi / 2)
+            cardinal = snap_to_cardinal(yaw)
+            if obstacle_direction == 'left':
+                detour_reference_yaw = normalize_angle(cardinal - math.pi / 2)
+            elif obstacle_direction == 'front':
+                # Project 0.5 m in each direction and pick the one closer to the goal
+                left_yaw  = normalize_angle(cardinal + math.pi / 2)
+                right_yaw = normalize_angle(cardinal - math.pi / 2)
+                left_x  = x + 0.5 * math.sin(left_yaw)
+                left_y  = y - 0.5 * math.cos(left_yaw)
+                right_x = x + 0.5 * math.sin(right_yaw)
+                right_y = y - 0.5 * math.cos(right_yaw)
+                dist_left  = math.sqrt((target_x - left_x)**2  + (target_y - left_y)**2)
+                dist_right = math.sqrt((target_x - right_x)**2 + (target_y - right_y)**2)
+                if dist_right < dist_left:
+                    detour_reference_yaw = right_yaw
+                    node.get_logger().info("Front obstacle — dodging RIGHT (closer to goal)")
+                else:
+                    detour_reference_yaw = left_yaw
+                    node.get_logger().info("Front obstacle — dodging LEFT (closer to goal or equal)")
+            else:  # 'right'
+                detour_reference_yaw = normalize_angle(cardinal + math.pi / 2)
         error = normalize_angle(detour_reference_yaw - yaw)
 
         if abs(error) > ANGLE_TOL:
@@ -365,10 +417,33 @@ def control_loop():
             cmd.twist.angular.z = max(min(K_ANG * goal_error, MAX_ANG), -MAX_ANG)
         else:
             cmd.twist.angular.z = 0.0
+            if abs(target_x) < DIST_TOL and abs(target_y) < DIST_TOL:
+                # Home position (0,0) — skip arm action
+                current_waypoint = (current_waypoint + 1) % len(waypoints)
+                state = "align_x"
+                node.get_logger().info("Home waypoint (0,0) reached — skipping arm action.")
+            else:
+                approach_start_x = x
+                approach_start_y = y
+                state = "approach"
+                node.get_logger().info("Waypoint reached — creeping forward 10 cm before arm action.")
+
+    # Approach: creep forward 10 cm toward the shelf before triggering arm
+    elif state == "approach":
+        dx_a = x - approach_start_x
+        dy_a = y - approach_start_y
+        dist_approached = math.sqrt(dx_a**2 + dy_a**2)
+        if dist_approached < 0.10:
+            cmd.twist.linear.x = 0.2
+            cmd.twist.angular.z = 0.0
+        else:
+            cmd.twist.linear.x = 0.0
+            approach_start_x = None
+            approach_start_y = None
             arm_done_received = False
             arm_trigger_pub.publish(Bool(data=True))
             state = "arm_action"
-            node.get_logger().info("Waypoint reached — waiting for arm to complete action.")
+            node.get_logger().info("Approach done — waiting for arm to complete action.")
 
     # Arm action: robot holds still while arm does its job
     elif state == "arm_action":
@@ -377,8 +452,26 @@ def control_loop():
         if arm_done_received:
             arm_done_received = False
             current_waypoint = (current_waypoint + 1) % len(waypoints)
+            post_arm_cooldown_end = node.get_clock().now() + rclpy.duration.Duration(seconds=4.0)
+            backup_start_x = x
+            backup_start_y = y
+            state = "backup"
+            node.get_logger().info("Arm done — backing up 10 cm before rotating to next waypoint.")
+
+    # Backup: reverse 10 cm from the shelf before rotating
+    elif state == "backup":
+        dx_b = x - backup_start_x
+        dy_b = y - backup_start_y
+        dist_backed = math.sqrt(dx_b**2 + dy_b**2)
+        if dist_backed < 0.10:
+            cmd.twist.linear.x = -0.2   # drive backwards
+            cmd.twist.angular.z = 0.0
+        else:
+            cmd.twist.linear.x = 0.0
+            backup_start_x = None
+            backup_start_y = None
             state = "align_x"
-            node.get_logger().info(f"Arm done — moving to waypoint {current_waypoint}.")
+            node.get_logger().info(f"Backed up 10 cm — moving to waypoint {current_waypoint} (obstacle detection paused to rotate away from shelf).")
 
 
     cmd_pub.publish(cmd)
@@ -404,6 +497,7 @@ def main():
     node.create_subscription(Imu, '/imu', imu_callback, 10)
     node.create_subscription(Odometry, '/diff_drive_controller/odom', odom_callback, 10)
     node.create_subscription(Bool, '/obstacle_detected', obstacle_callback, 10)
+    node.create_subscription(String, '/obstacle_direction', obstacle_direction_callback, 10)
     node.create_subscription(PoseArray, '/navigation_goals', goals_callback, 10)
     node.create_subscription(Bool, '/arm_done', arm_done_callback, 10)
 

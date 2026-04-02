@@ -23,12 +23,12 @@ class GoalPublisher(Node):
 
 		# Waypoints are owned by this node and sent once at startup.
 		self.waypoints = [
-			(1.0, 0.0, 0.0),
-			(-1.0, 0.0, 0.0),
-			(0.0, -3.0, 0.0),
-			(0.0, 3.0, 0.0),
-			(1.0, 1.0, math.pi / 2),
-			(0.0, 1.0, math.pi),
+			(0.0, -2.5, 0.0),
+			(0.0, 0.0, 0.0),
+			(-1.0, -2.5, 0.0),
+			(0.0, 0.0, 0.0),
+			(-2.0, -2.5, 0.0),
+			(0.0, 0.0, 0.0),
 		]
 
 		# Publish once after 3 seconds.

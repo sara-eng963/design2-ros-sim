@@ -150,20 +150,53 @@
     <include>
       <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/orange</uri>
       <name>orange</name>
-      <pose>0.59 0.21 0.19 0 0 0</pose>
+      <pose>2.80 0.02 0.195 -0.56 0.18 1.42</pose>
     </include>
+    
     <include>
       <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/shelf</uri>
       <name>shelf</name>
-      <pose>2.3790082931518555 -0.3723791241645813 -0.59369444847106934 1.5707999619299005 4.2247672654275534e-06 -1.6012899170941965</pose>
+      <pose>4.61 -0.45 -0.59369444847106934 1.5707999619299005 4.2247672654275534e-06 -1.6012899170941965</pose>
     </include>
-<!--
-<include>
+
+    <include>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/apple</uri>
+      <name>apple</name>
+      <pose>2.78 -0.98 0.22 -0.56 0.18 1.42</pose>
+    </include>
+
+    <include>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/peach</uri>
+      <name>peach</name>
+      <pose>2.81 -2.01 0.235 -0.56 0.18 1.42</pose>
+    </include>
+
+    
+    <include>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/shelf</uri>
+      <name>shelf2</name>
+      <pose>4.61 -1.45 -0.59369444847106934 1.5707999619299005 4.2247672654275534e-06 -1.6012899170941965</pose>
+    </include>
+
+   <include>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/shelf</uri>
+      <name>shelf3</name>
+      <pose>4.61 -2.45 -0.59369444847106934 1.5707999619299005 4.2247672654275534e-06 -1.6012899170941965</pose>
+    </include>
+
+   <include>
       <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/supermarket4</uri>
       <name>supermarket4</name>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>3.25 0 0 1.57 0 3.14</pose> 
     </include>
--->
+
+      <include>
+      <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/trolley</uri>
+      <name>trolley</name>
+      <pose>1 -1 0 1.57 0 1.57</pose> 
+    </include>
+
+
 
     <actor name="walking_person">
       <skin>
@@ -182,20 +215,19 @@
         <trajectory id="0" type="walking">
           <waypoint>
             <time>0</time>
-            <pose>-2.0 1.2 1.0 0 0 1.5708</pose>
+            <pose>1.6 -3.43 1.0 0 0 1.5708</pose>
           </waypoint>
           <waypoint>
             <time>10</time>
-            <pose>2.0 1.2 1.0 0 0 1.5708</pose>
+            <pose>1.6 3 1.0 0 0 1.5708</pose>
           </waypoint>
           <waypoint>
             <time>20</time>
-            <pose>-2.0 1.2 1.0 0 0 -1.5708</pose>
+            <pose>1.6 -3.43 1.0 0 0 1.5708</pose>
           </waypoint>
         </trajectory>
       </script>
     </actor>
-
 
 
 
