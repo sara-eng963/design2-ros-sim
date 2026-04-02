@@ -193,7 +193,7 @@
       <include>
       <uri>file:///home/sara/design2_ws/install/myrobot_sim/share/myrobot_sim/models/trolley</uri>
       <name>trolley</name>
-      <pose>1 -1 0 1.57 0 1.57</pose> 
+      <pose>1.05 -1 0 1.57 0 1.57</pose> 
     </include>
 
 
@@ -222,8 +222,8 @@
             <pose>1.6 3 1.0 0 0 1.5708</pose>
           </waypoint>
           <waypoint>
-            <time>20</time>
-            <pose>1.6 -3.43 1.0 0 0 1.5708</pose>
+            <time>9999</time>
+            <pose>1.6 3.1 1.0 0 0 1.5708</pose>
           </waypoint>
         </trajectory>
       </script>
